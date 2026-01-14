@@ -126,7 +126,12 @@ class NotionHelper:
 
         # Create new option
         try:
-            new_options = property_schema["select"]["options"] + [
+            # Extract only the fields Notion expects (id, name, color) to preserve existing options
+            existing_options = [
+                {k: v for k, v in opt.items() if k in ("id", "name", "color")}
+                for opt in property_schema["select"]["options"]
+            ]
+            new_options = existing_options + [
                 {"name": option_name, "color": "default"}
             ]
             updated_db = self._update_database(
